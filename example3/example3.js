@@ -2,6 +2,7 @@
 
     var scene, camera, renderer;
     var geometry, material, mesh;
+    var winResize;
 
     var geometryContainer= {
         radius:12,
@@ -18,6 +19,8 @@
 
         camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
         camera.position.z = 20;
+
+        winResize =  new THREEx.WindowResize(renderer, camera);
 
         var rand = parseInt(Math.random()*20+1);
 
@@ -49,7 +52,7 @@
 
         geometryContainer.geometries.rotation.z+= 0.01;
 
-        THREEx.WindowResize(renderer, camera);
+        winResize.trigger();
         renderer.render( scene, camera );
     }
 

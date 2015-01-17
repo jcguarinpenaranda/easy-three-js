@@ -2,7 +2,7 @@
 
     var scene, camera, renderer;
     var geometry, material, mesh;
-
+    var winResize;
 
     init();
     animate();
@@ -15,10 +15,7 @@
         camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
         camera.position.z = 15;
 
-        var plane = EasyThree.createPlane(50,50);
-        plane.rotation.x+=90;
-        plane.position.y-=5;
-        scene.add(plane);
+        winResize =  new THREEx.WindowResize(renderer, camera);
 
         var sphere1  = EasyThree.createSphere();
         sphere1.position.x-=10;
@@ -33,6 +30,7 @@
 
         var sphere3 = EasyThree.createSphere();
         sphere3.material = EasyThree.createPhongMaterial();
+        sphere3.material.color = EasyThree.color.BLUE;
         scene.add(sphere3);
 
         var sphere4  = EasyThree.createSphere();
@@ -65,7 +63,7 @@
         requestAnimationFrame( animate );
 
 
-        THREEx.WindowResize(renderer, camera);
+        winResize.trigger();
         renderer.render( scene, camera );
     }
 

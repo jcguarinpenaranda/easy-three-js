@@ -7,15 +7,16 @@ Look at examples, to find how would be a normal use of EasyThree.
 Here are some of them:
 
 <h3>Create Geometries</h3>
-Returns a cube with default material, ready for adding to scene.
-Default size is 1,1,1
 ```javascript
 	//...initialization
-	var cube = EasyThree.createCube();
+	var cube = EasyThree.createCube();//Default size is 1,1,1
 	scene.add(cube);
 
-	var sphere = EasyThree.createSphere();
+	var sphere = EasyThree.createSphere();//Default radius is 1
 	scene.add(sphere);
+
+	var circle = EasyThree.createCircle();//Default radius is 1
+	scene.add(circle);
 ```
 
 <h3>Create Materials</h3>
@@ -123,5 +124,6 @@ Just call
 
 ```
 
-
 Find 'easythree.js' in js/easythree.js
+
+By Juan Camilo Guarin P.

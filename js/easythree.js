@@ -26,11 +26,25 @@ var EasyThree = {
 	DEFAULT_MATERIAL_WIREFRAME:false,
 	DEFAULT_MATERIAL_FOG:true,
 
+
+
 	DEFAULT_MESH_PLANE_SIZE: new THREE.Vector2(1,1),
+
 	DEFAULT_MESH_CUBE_SIZE : new THREE.Vector3(1,1,1),
+
 	DEFAULT_MESH_SPHERE_RADIUS: 1,
 	DEFAULT_MESH_SPHERE_SEGMENTS: 16,
 	DEFAULT_MESH_SPHERE_RINGS: 16,
+
+	DEFAULT_MESH_CIRCLE_SEGMENTS: 16,
+	DEFAULT_MESH_CIRCLE_RADIUS: 1,
+
+	DEFAULT_MESH_CYLINDER_TOP_RADIUS : 1,
+	DEFAULT_MESH_CYLINDER_BOTTOM_RADIUS : 1,
+	DEFAULT_MESH_CYLINDER_HEIGHT : 1,
+	DEFAULT_MESH_CYLINDER_RADIUS_SEGMENTS : 8,
+	DEFAULT_MESH_CYLINTER_HEIGHT_SEGMENTS : 1,
+	DEFAULT_MESH_CYLINDER_OPEN_ENDED : false,
 
 	/*
 	------------------------------------------------------------------------
@@ -71,6 +85,12 @@ var EasyThree = {
 		return new THREE.Mesh(geometry, material);
 	},
 
+	createCircle: function(radius, segments, material = false){
+		radius = radius || this.DEFAULT_MESH_CIRCLE_RADIUS;
+		segments = segments || this.DEFAULT_MESH_CIRCLE_SEGMENTS;
+		return this.createMesh(new THREE.CircleGeometry( radius, segments ), material);
+	},
+
 	createSphere : function(radius, segments, rings, material = false){
 		radius = radius || this.DEFAULT_MESH_SPHERE_RADIUS;
 		segments = segments || this.DEFAULT_MESH_SPHERE_SEGMENTS;
@@ -92,6 +112,18 @@ var EasyThree = {
 		y = y || this.DEFAULT_MESH_PLANE_SIZE.y;
 
 		return this.createMesh(new THREE.PlaneGeometry(x,y), material);
+	},
+
+	
+	createCylinder: function(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded, material){
+		radiusTop = radiusTop || this.DEFAULT_MESH_CYLINDER_TOP_RADIUS;
+		radiusBottom = radiusBottom || this.DEFAULT_MESH_CYLINDER_BOTTOM_RADIUS;
+		height = height || this.DEFAULT_MESH_CYLINDER_HEIGHT;
+		radiusSegments = radiusSegments || this.DEFAULT_MESH_CYLINDER_RADIUS_SEGMENTS;
+		heightSegments = heightSegments || this.DEFAULT_MESH_CYLINTER_HEIGHT_SEGMENTS;
+		openEnded = openEnded || this.DEFAULT_MESH_CYLINDER_OPEN_ENDED;
+
+		return this.createMesh(new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded),material);
 	},
 
 	/*

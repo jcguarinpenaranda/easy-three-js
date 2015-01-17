@@ -2,6 +2,7 @@
 
     var scene, camera, renderer;
     var geometry, material, mesh;
+    var winResize;
 
     init();
     animate();
@@ -13,6 +14,8 @@
 
         camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
         camera.position.z = 10;
+
+        winResize =  new THREEx.WindowResize(renderer, camera);
 
         for(var i = 0; i<30; i++){
             var cube = EasyThree.createCube();
@@ -28,7 +31,7 @@
         requestAnimationFrame( animate );
 
 
-        THREEx.WindowResize(renderer, camera);
+        winResize.trigger();
         renderer.render( scene, camera );
     }
 
