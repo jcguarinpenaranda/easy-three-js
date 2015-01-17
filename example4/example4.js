@@ -33,8 +33,7 @@
         sphere3.material.color = EasyThree.color.BLUE;
         scene.add(sphere3);
 
-        var sphere4  = EasyThree.createSphere();
-        sphere4.position.x+=5;
+        var sphere4  = EasyThree.createSphere({posx:5,material:"phong",color:EasyThree.color.BROWN});
         scene.add(sphere4);
        
         var sphere5  = EasyThree.createSphere();

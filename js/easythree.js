@@ -26,7 +26,7 @@ var EasyThree = {
 	DEFAULT_MATERIAL_WIREFRAME:false,
 	DEFAULT_MATERIAL_FOG:true,
 
-
+	DEFAULT_MESH_POSITION : new THREE.Vector3(0,0,0),
 
 	DEFAULT_MESH_PLANE_SIZE: new THREE.Vector2(1,1),
 
@@ -77,53 +77,107 @@ var EasyThree = {
 	------------------------------------------------------------------------
 	Meshes Section
 	*/
-	createMesh : function(geometry,material=false){
-		if(material==false || material == undefined){
+	createMesh : function(geometry, material, additionalParams = {}){
+		if(!geometry){
+			return "You must specify a geometry";
+		}
+
+		if(!material){
 			material = this.createBasicMaterial();
 		}
 
-		return new THREE.Mesh(geometry, material);
+		var mesh = 	new THREE.Mesh(geometry, material);
+
+
+		/*Positioning*/
+		if(additionalParams.posx){
+			mesh.position.x = additionalParams.posx;
+		}
+
+		if(additionalParams.posy){
+			mesh.position.y = additionalParams.posy;
+		}
+
+		if(additionalParams.posz){
+			mesh.position.z = additionalParams.posz;
+		}
+
+		/*materials*/
+		if(additionalParams.material){
+			switch(additionalParams.material){
+				case "linebasic":
+					mesh.material = this.createLineBasicMaterial();
+					break;
+				case "linedashed":
+					mesh.material = this.createLineDashedMaterial();
+					break;
+				case "lambert":
+					mesh.material = this.createLambertMaterial();
+					break;
+				case "phong":
+					mesh.material = this.createPhongMaterial();
+					break;
+				case "normal":
+					mesh.material = this.createNormalMaterial();
+					break;
+				default:
+					mesh.material = this.createBasicMaterial();
+			}
+		}
+
+		if(additionalParams.color){
+			mesh.material.color = additionalParams.color;
+		}
+
+		return mesh;
 	},
 
-	createCircle: function(radius, segments, material = false){
-		radius = radius || this.DEFAULT_MESH_CIRCLE_RADIUS;
-		segments = segments || this.DEFAULT_MESH_CIRCLE_SEGMENTS;
-		return this.createMesh(new THREE.CircleGeometry( radius, segments ), material);
+	createCircle: function(param = {}, material){
+		p = {
+			radius: param.radius || this.DEFAULT_MESH_CIRCLE_RADIUS,
+			segments : param.segments || this.DEFAULT_MESH_CIRCLE_SEGMENTS
+		}
+
+		var additional = param.other || {}; 
+
+		return this.createMesh(new THREE.CircleGeometry(p.radius, p.segments ), material, additional);
 	},
 
-	createSphere : function(radius, segments, rings, material = false){
-		radius = radius || this.DEFAULT_MESH_SPHERE_RADIUS;
-		segments = segments || this.DEFAULT_MESH_SPHERE_SEGMENTS;
-		rings = rings || this.DEFAULT_MESH_SPHERE_RINGS;
+	createSphere : function(param = {}, material){
 
-		return this.createMesh(new THREE.SphereGeometry(radius,segments,rings),material);
+		param.radius = param.radius || this.DEFAULT_MESH_CIRCLE_RADIUS;
+		param.segments = param.segments || this.DEFAULT_MESH_CIRCLE_SEGMENTS;
+		param.rings = param.rings || this.DEFAULT_MESH_SPHERE_RINGS;
+
+		return this.createMesh(new THREE.SphereGeometry(param.radius,param.segments,param.rings),material, param);
 	},
 
-	createCube : function(x,y,z, material=false){
-		x = x || this.DEFAULT_MESH_CUBE_SIZE.x;
-		y = y || this.DEFAULT_MESH_CUBE_SIZE.y;
-		z = z || this.DEFAULT_MESH_CUBE_SIZE.z;
+	createCube : function(param = {}, material){
+		
+		param.sx = param.sx || this.DEFAULT_MESH_CUBE_SIZE.x;
+		param.sy = param.sy || this.DEFAULT_MESH_CUBE_SIZE.y;
+		param.sz = param.sz || this.DEFAULT_MESH_CUBE_SIZE.z;
 
-		return this.createMesh(new THREE.BoxGeometry( x, y, z), material);
+		return this.createMesh(new THREE.BoxGeometry(param.sx, param.sy, param.sz), material, param);
 	},
 
-	createPlane : function(x,y, material=false){
-		x = x || this.DEFAULT_MESH_PLANE_SIZE.x;
-		y = y || this.DEFAULT_MESH_PLANE_SIZE.y;
+	createPlane : function(param = {}, material){
+		param.sx = param.sx || this.DEFAULT_MESH_CUBE_SIZE.x;
+		param.sy = param.sy || this.DEFAULT_MESH_CUBE_SIZE.y;
 
-		return this.createMesh(new THREE.PlaneGeometry(x,y), material);
+		return this.createMesh(new THREE.PlaneGeometry(param.sx, param.sy), material, param);
 	},
 
 	
-	createCylinder: function(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded, material){
-		radiusTop = radiusTop || this.DEFAULT_MESH_CYLINDER_TOP_RADIUS;
-		radiusBottom = radiusBottom || this.DEFAULT_MESH_CYLINDER_BOTTOM_RADIUS;
-		height = height || this.DEFAULT_MESH_CYLINDER_HEIGHT;
-		radiusSegments = radiusSegments || this.DEFAULT_MESH_CYLINDER_RADIUS_SEGMENTS;
-		heightSegments = heightSegments || this.DEFAULT_MESH_CYLINTER_HEIGHT_SEGMENTS;
-		openEnded = openEnded || this.DEFAULT_MESH_CYLINDER_OPEN_ENDED;
-
-		return this.createMesh(new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded),material);
+	createCylinder: function(param = {}, material){
+		param.radiusTop = param.radiusTop || this.DEFAULT_MESH_CYLINDER_TOP_RADIUS;
+		param.radiusBottom = param.radiusBottom || this.DEFAULT_MESH_CYLINDER_BOTTOM_RADIUS;
+		param.height = param.height || this.DEFAULT_MESH_CYLINDER_HEIGHT;
+		param.radiusSegments = param.radiusSegments || this.DEFAULT_MESH_CYLINDER_RADIUS_SEGMENTS;
+		param.heightSegments = param.heightSegments || this.DEFAULT_MESH_CYLINTER_HEIGHT_SEGMENTS;
+		param.openEnded = param.openEnded || this.DEFAULT_MESH_CYLINDER_OPEN_ENDED;
+		
+		return this.createMesh(new THREE.CylinderGeometry(param.radiusTop, param.radiusBottom, param.height, param.radiusSegments, param.heightSegments, param.openEnded),material, param);
 	},
 
 	/*
