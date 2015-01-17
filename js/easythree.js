@@ -17,11 +17,12 @@ var EasyThree = {
 
 
 	DEFAULT_LIGHT_COLOR: 0xffffff,
-	DEFAULT_LIGHT_AMBIENT_COLOR: 0x444444,
+	DEFAULT_LIGHT_AMBIENT_COLOR: 0xffffff,
 	DEFAULT_LIGHT_SPECULAR_COLOR: 0xffffff,
+	DEFAULT_LIGHT_INTENSITY: 1,
 
 	DEFAULT_MATERIAL_COLOR: 0xffffff,
-	DEFAULT_MATERIAL_AMBIENT_COLOR: 0x444444,
+	DEFAULT_MATERIAL_AMBIENT_COLOR: 0x222222,
 	DEFAULT_MATERIAL_SPECULAR_COLOR: 0xffffff,
 	DEFAULT_MATERIAL_WIREFRAME:false,
 	DEFAULT_MATERIAL_FOG:true,
@@ -129,6 +130,10 @@ var EasyThree = {
 			mesh.material.color = additionalParams.color;
 		}
 
+		if(additionalParams.hex){
+			mesh.material.color = new THREE.Color(additionalParams.hex);
+		}
+
 		return mesh;
 	},
 
@@ -185,7 +190,7 @@ var EasyThree = {
 	Materials Section
 	*/
 
-	createLineBasicMaterial : function(color, fog){
+	createLineBasicMaterial : function(param = {}){
 		/*
 		LineBasicMaterial(parameters)
 
@@ -198,17 +203,12 @@ var EasyThree = {
 		fog — Define whether the material color is affected by global fog settings. Default is false. 
 		*/
 
-
-		color = color || this.DEFAULT_MATERIAL_COLOR;
-		fog = fog || false; //not default fog preference because three js default is false
-
 		return new THREE.LineBasicMaterial({
-			color:color,
-			fog: fog
+			color: param.color  || this.DEFAULT_MATERIAL_COLOR
 		});
 	},
 
-	createLineDashedMaterial : function (color, fog){
+	createLineDashedMaterial : function (param = {}){
 		/*
 		LineDashedMaterial(parameters)
 		
@@ -223,16 +223,12 @@ var EasyThree = {
 		fog — Define whether the material color is affected by global fog settings. Default is false. 
 		*/
 
-		color = color || this.DEFAULT_MATERIAL_COLOR;
-		fog = fog || false; //not default fog preference because three js default is false
-
 		return new THREE.LineDashedMaterial({
-			color: color,
-			fog: fog
+			color: param.color || this.DEFAULT_MATERIAL_COLOR
 		});
 	},
 
-	createBasicMaterial: function(color, ambientColor, fog, shading){
+	createBasicMaterial: function(param = {}){
 		/*
 		MeshBasicMaterial( parameters )
 		parameters is an object with one or more properties defining the material's appearance.
@@ -254,20 +250,15 @@ var EasyThree = {
 		morphTargets — Define whether the material uses morphTargets. Default is false. 
 		*/
 
-		color = color || this.DEFAULT_MATERIAL_COLOR;
-		ambientColor = ambientColor || this.DEFAULT_MATERIAL_AMBIENT_COLOR;
-		shading = shading || this.DEFAULT_SHADING;
-		fog =  fog || this.DEFAULT_MATERIAL_FOG;
-
 		return new THREE.MeshBasicMaterial({
-			color:color,
-			ambient: ambientColor,
-			shading: shading,
-			fog:fog
+			color: param.color || this.DEFAULT_MATERIAL_COLOR,
+			ambient: param.ambient || this.DEFAULT_MATERIAL_AMBIENT_COLOR,
+			shading: param.shading || this.DEFAULT_SHADING,
+			fog : param.fog || this.DEFAULT_MATERIAL_FOG
 		});
 	},
 
-	createLambertMaterial: function (color, ambientColor, fog, shading){
+	createLambertMaterial: function (param = {}){
 		/*
 		MeshLambertMaterial(parameters)
 		parameters -- parameters is an object with one or more properties defining the material's appearance.
@@ -289,20 +280,15 @@ var EasyThree = {
 
 		*/
 
-		color = color || this.DEFAULT_MATERIAL_COLOR;
-		ambientColor = ambientColor || this.DEFAULT_MATERIAL_AMBIENT_COLOR;
-		shading = shading || this.DEFAULT_SHADING;
-		fog = fog || this.DEFAULT_MATERIAL_FOG;
-
 		return new THREE.MeshLambertMaterial({
-			color: color,
-			shading: shading,
-			ambient: ambientColor,
-			fog: fog
+			color: param.color || this.DEFAULT_MATERIAL_COLOR,
+			ambient: param.ambient || this.DEFAULT_MATERIAL_AMBIENT_COLOR,
+			shading: param.shading || this.DEFAULT_SHADING,
+			fog : param.fog || this.DEFAULT_MATERIAL_FOG
 		});
 	},
 
-	createNormalMaterial : function (shading){
+	createNormalMaterial : function (param = {}){
 		/*
 		MeshNormalMaterial(parameters)
 		parameters is an object with one or more properties defining the material's appearance.
@@ -313,14 +299,12 @@ var EasyThree = {
 		morphTargets -- Define whether the material uses morphTargets. Default is false.
 		*/
 
-		shading = shading || this.DEFAULT_SHADING;
-
 		return new THREE.MeshNormalMaterial({
-			shading: shading
+			shading: param.shading || this.DEFAULT_SHADING
 		});
 	},
 
-	createPhongMaterial: function(color, ambientColor, specularColor, fog, shading){
+	createPhongMaterial: function(param = {}){
 		/*
 		MeshPhongMaterial(parameters)
 		parameters -- an object with one or more of the material's properties defining the its appearance.
@@ -342,19 +326,13 @@ var EasyThree = {
 		morphTargets — Define whether the material uses morphTargets. Default is false. 
 		*/
 
-		color = color || this.DEFAULT_MATERIAL_COLOR;
-		ambientColor = ambientColor || this.DEFAULT_MATERIAL_AMBIENT_COLOR;
-		specularColor = specularColor || this.DEFAULT_MATERIAL_SPECULAR_COLOR;
-		fog  = fog || this.DEFAULT_MATERIAL_FOG;
-		shading = shading || this.DEFAULT_SHADING;
-
 		return new THREE.MeshPhongMaterial({
-			color: color,
-			ambient: ambientColor,
-			specular: specularColor,
-			fog: fog,
-			shading: shading
-		} );
+			color: param.color || this.DEFAULT_MATERIAL_COLOR,
+			ambient: param.ambient || this.DEFAULT_MATERIAL_AMBIENT_COLOR,
+			specular: param.specular || this.DEFAULT_MATERIAL_SPECULAR_COLOR,
+			shading: param.shading || this.DEFAULT_SHADING,
+			fog : param.fog || this.DEFAULT_MATERIAL_FOG
+		});
 	},
 
 	/*
@@ -362,37 +340,49 @@ var EasyThree = {
 	Lights Section
 	*/
 
-	createLight: function(light, castShadow = true){
-		if(castShadow){
-			light.castShadow = true;
-			light.shadowCameraVisible = false;
-			light.shadowDarkness = 0.5;
 
-			light.shadowCameraNear = 0;
-			light.shadowCameraFar = 40;
+	createAmbientLight: function(param = {}){
+		param.hex = param.hex || this.DEFAULT_LIGHT_COLOR;
+		return new THREE.AmbientLight(param.hex);
+	},
 
-			light.shadowCameraLeft = -20;
-			light.shadowCameraRight = 20;
-			light.shadowCameraTop = 20;
-			light.shadowCameraBottom = -20;
+	createDirectionalLight: function(param = {}){
+		param.hex = param.hex || this.DEFAULT_LIGHT_COLOR;
+		param.intensity = param.intensity || this.DEFAULT_LIGHT_INTENSITY;
+
+		var dl = new THREE.DirectionalLight(param.hex, param.intensity);
+
+		if(param.shadows){
+			dl.castShadow = true;
 		}
 
-		return light;
+		return dl;
 	},
 
-	createAmbientLight: function(color = 0x777777){
-		return new THREE.AmbientLight(color);
+	createPointLight: function(param = {}){
+		param.hex = param.hex || this.DEFAULT_LIGHT_COLOR;
+		param.intensity = param.intensity || this.DEFAULT_LIGHT_INTENSITY;
+
+		return new THREE.PointLight(param.hex, param.intensity);
 	},
 
-	createDirectionalLight: function(color = 0xffffff, intensity=0.5, castShadow = true){
-		return this.createLight(new THREE.DirectionalLight(color, intensity), castShadow);
+	createAreaLight: function(param = {}){
+		param.hex = param.hex || this.DEFAULT_LIGHT_COLOR;
+		param.intensity = param.intensity || this.DEFAULT_LIGHT_INTENSITY;
+
+		return new THREE.AreaLight(param.hex,param.intensity);
 	},
 
-	createPointLight: function(color = 0xffffff){
-		return new THREE.PointLight(color);
-	},
+	createHemisphereLight: function(param = {}){
+		
+		param.skyColorHex = param.skyColorHex || 0xffffff;
+		param.groundColorHex = param.groundColorHex || 0xffffff;
+		param.intensity = param.intensity || this.DEFAULT_LIGHT_INTENSITY;
 
-	createHemisphereLight: function(skyColorHex = 0xffffff, groundColorHex=0xffffff, intensity = 0.5){
-		return new THREE.HemisphereLight(skyColorHex, groundColorHex, intensity)
+		//skyColorHex = 0xffffff, groundColorHex=0xffffff, intensity = 0.5
+
+		return new THREE.HemisphereLight(param.skyColorHex, param.groundColorHex, param.intensity);
 	}
 };
+
+var e3 = EasyThree;
