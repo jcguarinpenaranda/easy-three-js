@@ -46,7 +46,9 @@ Here are some other examples:
 	/*
 	Creating a cube with no parameters specified.
 
-	By default, size would be unitary and material would be white MeshBasicMaterial for all meshes created without parameters. Off course you can modify the defaults, that is lower in this document.
+	By default, size would be unitary and material would be white 
+	MeshBasicMaterial for all meshes created without parameters. 
+	Off course you can modify the defaults, that is lower in this document.
 	*/
 	var cube = EasyThree.createCube(); 
 	//or define {sx:2, sy:2, sz:2} to make it 2 by 2 by 2 units, and then

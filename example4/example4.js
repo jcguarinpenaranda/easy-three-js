@@ -9,7 +9,10 @@
 
     function init() {
         scene = new THREE.Scene();
-        renderer = new THREE.WebGLRenderer();
+        renderer = new THREE.WebGLRenderer();//{alpha:true} to make it transparent
+
+        renderer.setClearColor( EasyThree.color.WHITE, 0 ); // the default
+
         renderer.setSize( window.innerWidth, window.innerHeight );
 
         camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
